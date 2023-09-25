@@ -309,6 +309,32 @@ done
 echo $echomode
 echo $echomode "There are" $inventoryDaily "policies that update inventory daily."
 
+# Parse Patch Policies
+
+list=`cat "$file" | grep -n "Patch Unknown Version" | awk -F : '{'print' $1}'`
+
+echo $echomode
+echo $echomode $(tput setaf 8) "Patch policy summary:"
+
+patch_software_title_info=$(sed -n '/Patch Management Software Titles/,/^[a-zA-Z]/p' "$file")
+
+for i in $list 
+do
+
+	#Check if policy is enabled
+	policy_info=`head -n $i "$file" | tail -n 7`
+	enabled=`echo $echomode "$policy_info" | awk /'Enabled/ {'print' $NF}'`
+
+	software_id=`echo $echomode "$policy_info" | awk -F '[\.]+[\.]' '/Software Title Configuration ID/ {'print' $NF}'`
+	name=`echo $echomode "$policy_info" | awk -F '[\.]+[\.]' '/Name/ {'print' $NF}'`
+	software_name=`echo "$patch_software_title_info" | grep -A1 -E "ID\s+$software_id" | awk -F '[\.]+[\.]' '/Name/ {print $NF}'`
+	version=`echo $echomode "$policy_info" | awk -F '[\.]+[\.]' '/Target Version/ {'print' $NF}'`
+	echo $echomode $(tput setaf 6)"Patch Policy:" $(tput sgr0) "\t $name" 
+	echo $echomode $(tput setaf 8)"\t $software_name Version: $version"
+done
+
+echo $echomode
+
 #List smart group names that include 10 or more criteria
 
 while read line
