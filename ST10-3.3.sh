@@ -327,7 +327,7 @@ do
 
 	software_id=`echo $echomode "$policy_info" | awk -F '[\.]+[\.]' '/Software Title Configuration ID/ {'print' $NF}'`
 	name=`echo $echomode "$policy_info" | awk -F '[\.]+[\.]' '/Name/ {'print' $NF}'`
-	software_name=`echo "$patch_software_title_info" | grep -A1 -E "ID\s+$software_id" | awk -F '[\.]+[\.]' '/Name/ {print $NF}'`
+	software_name=`echo "$patch_software_title_info" | grep -A1 -E "ID\s+$software_id\$" | awk -F '[\.]+[\.]' '/Name/ {print $NF}'`
 	version=`echo $echomode "$policy_info" | awk -F '[\.]+[\.]' '/Target Version/ {'print' $NF}'`
 	echo $echomode $(tput setaf 6)"Patch Policy:" $(tput sgr0) "\t $name" 
 	echo $echomode $(tput setaf 8)"\t $software_name Version: $version"
